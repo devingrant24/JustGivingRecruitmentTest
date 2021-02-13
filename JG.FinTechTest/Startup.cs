@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using JG.FinTechTest.Helpers;
+using JG.FinTechTest.Helpers.Interfaces;
+using JG.FinTechTest.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +11,8 @@ namespace JG.FinTechTest
 {
     public class Startup
     {
+        private const string GiftAidOptionsKey = "GiftAid";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,6 +24,9 @@ namespace JG.FinTechTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSingleton<IGiftAidCalculator, GiftAidCalculator>();
+            services.Configure<GiftAidOptions>(Configuration.GetSection(GiftAidOptionsKey));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
