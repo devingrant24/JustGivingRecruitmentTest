@@ -23,6 +23,20 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/GiftAidResponse'
+    post:
+      summary: Record donator/donation information for a gift aid donation
+      parameters:
+        - in: body
+          name: GiftAidDeclarationRequest
+          schema:
+            $ref: "#/definitions/GiftAidDeclarationRequest"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/GiftAidDeclarationResponse'
 definitions:
   GiftAidResponse:
     type: object
@@ -31,6 +45,31 @@ definitions:
       - giftAidAmount
     properties:
       donationAmount:
+        type: number
+      giftAidAmount: 
+        type: number
+  GiftAidDeclarationRequest:
+    type: object
+    required:
+      - Name
+      - PostCode
+      - DonationAmount
+    properties:
+      Name:
+        type: string
+      PostCode:
+        type: string
+      DonationAmount:
+        type: number
+        minimum: 2.0
+        maximum: 100000.0
+  GiftAidDeclarationResponse:
+    type: object
+    required:
+      - id
+      - giftAidAmount
+    properties:
+      id:
         type: number
       giftAidAmount: 
         type: number
