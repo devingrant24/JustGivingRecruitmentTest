@@ -144,7 +144,7 @@ namespace JG.FinTechTest.Tests.Controllers
         }
 
         [Fact]
-        public void CreateGiftAidDeclaration_ReturnsGiftAidResponseFromHandler()
+        public void CreateGiftAidDeclaration_ReturnsGiftAidDeclarationResponseFromHandler()
         {
             var expectedResponse = new GiftAidDeclarationResponse { Id = 24, GiftAidAmount = 20.0 };
             _handler.Setup(h => h.CreateGiftAidDeclaration(It.IsAny<GiftAidDeclarationRequest>())).Returns(expectedResponse);

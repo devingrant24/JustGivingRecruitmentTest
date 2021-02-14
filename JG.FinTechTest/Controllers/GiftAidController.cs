@@ -36,7 +36,7 @@ namespace JG.FinTechTest.Controllers
         /// <param name="request">Contains the name and postal code of the donator, and the amount of the donation</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult<GiftAidResponse> CreateGiftAidDeclaration(GiftAidDeclarationRequest request)
+        public ActionResult<GiftAidDeclarationResponse> CreateGiftAidDeclaration(GiftAidDeclarationRequest request)
         {
             var response = _handler.CreateGiftAidDeclaration(request);
 
