@@ -3,6 +3,8 @@ using JG.FinTechTest.Handlers.Interfaces;
 using JG.FinTechTest.Helpers;
 using JG.FinTechTest.Helpers.Interfaces;
 using JG.FinTechTest.Models.Options;
+using JG.FinTechTest.Storage;
+using JG.FinTechTest.Storage.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,7 @@ namespace JG.FinTechTest
     public class Startup
     {
         private const string GiftAidOptionsKey = "GiftAid";
+        private const string StorageKey = "Storage";
 
         public Startup(IConfiguration configuration)
         {
@@ -34,6 +37,9 @@ namespace JG.FinTechTest
 
             services.AddSingleton<IGiftAidCalculator, GiftAidCalculator>();
             services.Configure<GiftAidOptions>(Configuration.GetSection(GiftAidOptionsKey));
+
+            services.AddScoped<IGiftAidDeclarationRepository, GiftAidDeclarationRepository>();
+            services.Configure<StorageOptions>(Configuration.GetSection(StorageKey));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
