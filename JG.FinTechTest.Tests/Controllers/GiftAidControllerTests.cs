@@ -1,5 +1,6 @@
 ﻿using JG.FinTechTest.Controllers;
 using JG.FinTechTest.Handlers.Interfaces;
+using JG.FinTechTest.Models.Requests;
 using JG.FinTechTest.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -20,6 +21,7 @@ namespace JG.FinTechTest.Tests.Controllers
         {
             _handler = new Mock<IGiftAidHandler>();
             _handler.Setup(c => c.CalculateGiftAid(It.IsAny<double>())).Returns(new GiftAidResponse());
+            _handler.Setup(c => c.CreateGiftAidDeclaration(It.IsAny<GiftAidDeclarationRequest>())).Returns(new GiftAidDeclarationResponse());
 
             _controller = new GiftAidController(_handler.Object);
         }
@@ -40,6 +42,8 @@ namespace JG.FinTechTest.Tests.Controllers
             var attribute = typeof(GiftAidController).GetCustomAttributes(typeof(ApiControllerAttribute), false).FirstOrDefault();
             Assert.NotNull(attribute);
         }
+
+        #region CalculateGiftAid
 
         [Fact]
         public void CalculateGiftAid_AmountParameter_HasRequiredAttribute()
@@ -106,5 +110,50 @@ namespace JG.FinTechTest.Tests.Controllers
             var response = _controller.CalculateGiftAid(25.0);
             Assert.Same(expectedResponse, (GiftAidResponse)((OkObjectResult)response.Result).Value);
         }
+
+        #endregion
+
+        #region CreateGiftAidDeclaration
+
+        [Fact]
+        public void CreateGiftAidDeclaration_CallsHandlerCreateGiftAidDeclaration_WithRequestProvided()
+        {
+            var request = new GiftAidDeclarationRequest { Name = "Name", PostCode = "PostCode", DonationAmount = 200.0 };
+
+            _controller.CreateGiftAidDeclaration(request);
+
+            _handler.Verify(c => c.CreateGiftAidDeclaration(request), Times.Once);
+        }
+
+        [Fact]
+        public void CreateGiftAidDeclaration_ReturnsOkObjectResult()
+        {
+            var response = _controller.CreateGiftAidDeclaration(new GiftAidDeclarationRequest { Name = "Name", PostCode = "PostCode", DonationAmount = 200.0 });
+            Assert.NotNull(response);
+            Assert.IsType<OkObjectResult>(response.Result);
+            Assert.Equal(200, ((OkObjectResult)response.Result).StatusCode);
+        }
+
+        [Fact]
+        public void CreateGiftAidDeclaration_ReturnsGiftAidDeclarationResponse()
+        {
+            var response = _controller.CreateGiftAidDeclaration(new GiftAidDeclarationRequest { Name = "Name", PostCode = "PostCode", DonationAmount = 200.0 });
+            Assert.NotNull(response);
+            Assert.NotNull(((OkObjectResult)response.Result).Value);
+            Assert.IsType<GiftAidDeclarationResponse>(((OkObjectResult)response.Result).Value);
+        }
+
+        [Fact]
+        public void CreateGiftAidDeclaration_ReturnsGiftAidResponseFromHandler()
+        {
+            var expectedResponse = new GiftAidDeclarationResponse { Id = 24, GiftAidAmount = 20.0 };
+            _handler.Setup(h => h.CreateGiftAidDeclaration(It.IsAny<GiftAidDeclarationRequest>())).Returns(expectedResponse);
+
+            var response = _controller.CreateGiftAidDeclaration(new GiftAidDeclarationRequest { Name = "Name", PostCode = "PostCode", DonationAmount = 200.0 });
+            Assert.Same(expectedResponse, (GiftAidDeclarationResponse)((OkObjectResult)response.Result).Value);
+
+        }
+
+        #endregion
     }
 }
