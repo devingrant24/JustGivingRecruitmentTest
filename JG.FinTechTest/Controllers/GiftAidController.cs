@@ -1,4 +1,4 @@
-﻿using JG.FinTechTest.Helpers.Interfaces;
+﻿using JG.FinTechTest.Handlers.Interfaces;
 using JG.FinTechTest.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -9,11 +9,11 @@ namespace JG.FinTechTest.Controllers
     [ApiController]
     public class GiftAidController : ControllerBase
     {
-        private readonly IGiftAidCalculator _calculator;
+        private readonly IGiftAidHandler _handler;
 
-        public GiftAidController(IGiftAidCalculator calculator)
+        public GiftAidController(IGiftAidHandler handler)
         {
-            _calculator = calculator;
+            _handler = handler;
         }
 
         /// <summary>
@@ -24,13 +24,7 @@ namespace JG.FinTechTest.Controllers
         [HttpGet]
         public ActionResult<GiftAidResponse> CalculateGiftAid([FromQuery, Required, Range(2.0, 100000.0)] double amount)
         {
-            var giftAidAmount = _calculator.CalculateGiftAid(amount);
-
-            var response = new GiftAidResponse
-            {
-                DonationAmount = amount,
-                GiftAidAmount = giftAidAmount
-            };
+            var response = _handler.CalculateGiftAid(amount);
 
             return Ok(response);
         }

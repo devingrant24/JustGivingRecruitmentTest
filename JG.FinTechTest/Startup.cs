@@ -1,4 +1,6 @@
-﻿using JG.FinTechTest.Helpers;
+﻿using JG.FinTechTest.Handlers;
+using JG.FinTechTest.Handlers.Interfaces;
+using JG.FinTechTest.Helpers;
 using JG.FinTechTest.Helpers.Interfaces;
 using JG.FinTechTest.Models.Options;
 using Microsoft.AspNetCore.Builder;
@@ -27,6 +29,8 @@ namespace JG.FinTechTest
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); // To ensure properties are serialized in camelcase to match the swagger spec.
+
+            services.AddScoped<IGiftAidHandler, GiftAidHandler>();
 
             services.AddSingleton<IGiftAidCalculator, GiftAidCalculator>();
             services.Configure<GiftAidOptions>(Configuration.GetSection(GiftAidOptionsKey));

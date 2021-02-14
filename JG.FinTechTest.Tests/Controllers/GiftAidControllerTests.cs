@@ -1,5 +1,5 @@
 ﻿using JG.FinTechTest.Controllers;
-using JG.FinTechTest.Helpers.Interfaces;
+using JG.FinTechTest.Handlers.Interfaces;
 using JG.FinTechTest.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -12,16 +12,16 @@ namespace JG.FinTechTest.Tests.Controllers
 {
     public class GiftAidControllerTests
     {
-        private readonly Mock<IGiftAidCalculator> _calculator;
+        private readonly Mock<IGiftAidHandler> _handler;
 
         private readonly GiftAidController _controller;
 
         public GiftAidControllerTests()
         {
-            _calculator = new Mock<IGiftAidCalculator>();
-            _calculator.Setup(c => c.CalculateGiftAid(It.IsAny<double>())).Returns(20.0);
+            _handler = new Mock<IGiftAidHandler>();
+            _handler.Setup(c => c.CalculateGiftAid(It.IsAny<double>())).Returns(new GiftAidResponse());
 
-            _controller = new GiftAidController(_calculator.Object);
+            _controller = new GiftAidController(_handler.Object);
         }
 
         [Fact]
@@ -72,11 +72,11 @@ namespace JG.FinTechTest.Tests.Controllers
         }
 
         [Fact]
-        public void CalculateGiftAid_CallsCalculatorCalculateGiftAid_WithAmountProvided()
+        public void CalculateGiftAid_CallsHandlerCalculateGiftAid_WithAmountProvided()
         {
             _controller.CalculateGiftAid(25.0);
 
-            _calculator.Verify(c => c.CalculateGiftAid(25.0), Times.Once);
+            _handler.Verify(c => c.CalculateGiftAid(25.0), Times.Once);
         }
 
         [Fact]
@@ -98,17 +98,13 @@ namespace JG.FinTechTest.Tests.Controllers
         }
 
         [Fact]
-        public void CalculateGiftAid_ReturnsDonationAmountProvided()
+        public void CalculateGiftAid_ReturnsGiftAidResponseFromHandler()
         {
-            var response = _controller.CalculateGiftAid(25.0);
-            Assert.Equal(25.0, ((GiftAidResponse)((OkObjectResult)response.Result).Value).DonationAmount);
-        }
+            var expectedResponse = new GiftAidResponse { DonationAmount = 100.0, GiftAidAmount = 25.0 };
+            _handler.Setup(h => h.CalculateGiftAid(It.IsAny<double>())).Returns(expectedResponse);
 
-        [Fact]
-        public void CalculateGiftAid_ReturnsGiftAidAmount_FromCalculator()
-        {
             var response = _controller.CalculateGiftAid(25.0);
-            Assert.Equal(20.0, ((GiftAidResponse)((OkObjectResult)response.Result).Value).GiftAidAmount);
+            Assert.Same(expectedResponse, (GiftAidResponse)((OkObjectResult)response.Result).Value);
         }
     }
 }
