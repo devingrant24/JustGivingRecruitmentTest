@@ -1,4 +1,4 @@
-﻿namespace JG.FinTechTest.Models
+﻿namespace JG.FinTechTest.Models.Options
 {
     public class GiftAidOptions
     {

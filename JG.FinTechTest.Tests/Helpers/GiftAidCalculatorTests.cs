@@ -1,6 +1,6 @@
 ﻿using JG.FinTechTest.Helpers;
 using JG.FinTechTest.Helpers.Interfaces;
-using JG.FinTechTest.Models;
+using JG.FinTechTest.Models.Options;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;

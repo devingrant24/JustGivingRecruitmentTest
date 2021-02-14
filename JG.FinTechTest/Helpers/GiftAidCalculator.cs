@@ -1,5 +1,5 @@
 ﻿using JG.FinTechTest.Helpers.Interfaces;
-using JG.FinTechTest.Models;
+using JG.FinTechTest.Models.Options;
 using Microsoft.Extensions.Options;
 
 namespace JG.FinTechTest.Helpers
