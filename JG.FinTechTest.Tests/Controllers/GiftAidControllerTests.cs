@@ -4,6 +4,7 @@ using JG.FinTechTest.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
@@ -38,6 +39,19 @@ namespace JG.FinTechTest.Tests.Controllers
         {
             var attribute = typeof(GiftAidController).GetCustomAttributes(typeof(ApiControllerAttribute), false).FirstOrDefault();
             Assert.NotNull(attribute);
+        }
+
+        [Fact]
+        public void CalculateGiftAid_AmountParameter_HasRequiredAttribute()
+        {
+            var parameter = typeof(GiftAidController)
+                .GetMethod(nameof(GiftAidController.CalculateGiftAid))
+                .GetParameters()
+                .SingleOrDefault();
+            Assert.NotNull(parameter);
+
+            var requiredAttribute = parameter.CustomAttributes.SingleOrDefault(a => a.AttributeType == typeof(RequiredAttribute));
+            Assert.NotNull(requiredAttribute);
         }
 
         [Fact]
