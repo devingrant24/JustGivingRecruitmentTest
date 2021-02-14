@@ -55,6 +55,23 @@ namespace JG.FinTechTest.Tests.Controllers
         }
 
         [Fact]
+        public void CalculateGiftAid_AmountParameter_HasCorrectRangeAttribute()
+        {
+            var parameter = typeof(GiftAidController)
+                .GetMethod(nameof(GiftAidController.CalculateGiftAid))
+                .GetParameters()
+                .SingleOrDefault();
+            Assert.NotNull(parameter);
+
+            var rangeAttribute = parameter.CustomAttributes.SingleOrDefault(a => a.AttributeType == typeof(RangeAttribute));
+            Assert.NotNull(rangeAttribute);
+
+            Assert.Equal(2, rangeAttribute.ConstructorArguments.Count);
+            Assert.Equal(2.0, rangeAttribute.ConstructorArguments[0].Value);
+            Assert.Equal(100000.0, rangeAttribute.ConstructorArguments[1].Value);
+        }
+
+        [Fact]
         public void CalculateGiftAid_CallsCalculatorCalculateGiftAid_WithAmountProvided()
         {
             _controller.CalculateGiftAid(25.0);

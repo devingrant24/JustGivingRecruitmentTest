@@ -73,13 +73,35 @@ namespace JG.FinTechTest.Tests.Controllers
         }
 
         [Fact]
-        public async Task CalculateGiftAid_NoAmountProvided_ReturnsValidationError()
+        public async Task CalculateGiftAid_NoAmountProvided_ReturnsCorrectValidationError()
         {
             var response = await SendRequest();
             var errorResponse = JsonConvert.DeserializeObject<GiftAidErrorResponse>(await response.Content.ReadAsStringAsync());
 
             var validationError = Assert.Single(errorResponse.AmountErrors);
             Assert.Equal("The amount field is required.", validationError);
+        }
+
+        [Theory]
+        [InlineData(1.0)]
+        [InlineData(100001.0)]
+        public async Task CalculateGiftAid_AmountProvidedOutsideOfRange_Returns400(double donationAmount)
+        {
+            var response = await SendRequest(donationAmount);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData(1.0)]
+        [InlineData(100001.0)]
+        public async Task CalculateGiftAid_AmountProvidedOutsideOfRange_ReturnsCorrectValidationError(double donationAmount)
+        {
+            var response = await SendRequest(donationAmount);
+            var errorResponse = JsonConvert.DeserializeObject<GiftAidErrorResponse>(await response.Content.ReadAsStringAsync());
+
+            var validationError = Assert.Single(errorResponse.AmountErrors);
+            Assert.Equal("The field amount must be between 2 and 100000.", validationError);
         }
     }
 }
